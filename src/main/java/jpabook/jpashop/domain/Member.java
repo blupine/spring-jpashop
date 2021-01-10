@@ -18,6 +18,6 @@ public class Member {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "member") // 양방향 연관관계
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // 양방향 연관관계
     private List<Order> orders = new ArrayList<>();
 }
