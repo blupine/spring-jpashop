@@ -29,4 +29,10 @@ public class Category {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Category> childs = new ArrayList<>();
+
+    // 연관관계 편의 메소드
+    public void addChildCategory(Category child) {
+        this.childs.add(child);
+        child.setParent(this);
+    }
 }
