@@ -5,7 +5,8 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
-import jpabook.jpashop.repository.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
-
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     /**
      * 지연로딩을 사용하는 엔티티는 500 에러가 발생함 // Hibernate5Module을 Bean으로 등록해야지 json 변환 시 지연로딩을 함
@@ -64,7 +65,7 @@ public class OrderSimpleApiController {
 
     @GetMapping("/api/v4/simple-orders")
     public Result orderV4() {
-        List<OrderSimpleQueryDto> orderDtos = orderRepository.findOrdersDtos();
+        List<OrderSimpleQueryDto> orderDtos = orderSimpleQueryRepository.findOrdersDtos();
         return new Result(orderDtos);
     }
 
