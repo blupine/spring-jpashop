@@ -1,13 +1,19 @@
 package jpabook.jpashop.api;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,6 +30,7 @@ public class OrderSimpleApiController {
 
     /**
      * 지연로딩을 사용하는 엔티티는 500 에러가 발생함 // Hibernate5Module을 Bean으로 등록해야지 json 변환 시 지연로딩을 함
+     *
      * @return
      */
     @GetMapping("/api/v1/simple-orders")
@@ -34,5 +41,37 @@ public class OrderSimpleApiController {
             order.getDelivery().getAddress();   // Lazy Loading 필드 강제 로딩
         }
         return all;
+    }
+
+    @GetMapping("/api/v2/simple-orders")
+    public Result orderV2() {
+        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<SimpleOrderDto> collect = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+        return new Result(collect);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private T data;
+    }
+
+    @Data
+    static class SimpleOrderDto {
+        private Long orderId;
+        private String name;
+        private LocalDateTime orderDate;
+        private OrderStatus orderStatus;
+        private Address address;
+
+        public SimpleOrderDto(Order order) {
+            orderId = order.getId();
+            name = order.getMember().getName();
+            orderDate = order.getOrderDate();
+            orderStatus = order.getStatus();
+            address = order.getDelivery().getAddress();
+        }
     }
 }
