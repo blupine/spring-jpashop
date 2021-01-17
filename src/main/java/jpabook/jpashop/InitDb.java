@@ -18,8 +18,6 @@ import javax.persistence.EntityManager;
  * * * Spring1 Book
  * * * Spring2 Book
  */
-
-
 @Component
 @RequiredArgsConstructor
 public class InitDb {
