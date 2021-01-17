@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jpabook.jpashop.domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class Category {
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
@@ -27,6 +29,7 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Category> childs = new ArrayList<>();
 
