@@ -76,6 +76,12 @@ public class OrderRepository {
                 .getResultList();
     }
 
+    /**
+     * distinct로 중복을 제거하는건 애플리케이션으로 가져와서 제거하는 것
+     * 따라서 중복이 많을 경우엔 DB에서 많은 데이터를 받아와야 한다는 한계가 있음 -> 이런 경우 batch fetch를 사용하는 편이 더 좋음
+     * 또한 fetch join을 사용하기 때문에 paging 사용이 불가능함
+     * @return
+     */
     public List<Order> findAllWithItem() {
         return em.createQuery(
                 "select distinct o from Order o" +
@@ -86,6 +92,14 @@ public class OrderRepository {
                 .getResultList();
     }
 
+
+    /**
+     * fetch join의 paging 문제와 데이터 전송량 문제를 해결할 수 있는 방법
+     * application.yml의 hibernate.properties.default_batch_fetch_size 설정 필요
+     * @param offset
+     * @param limit
+     * @return
+     */
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
         return em.createQuery(
                 "select o from Order o" +
