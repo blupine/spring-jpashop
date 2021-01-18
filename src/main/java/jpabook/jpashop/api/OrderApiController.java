@@ -9,6 +9,7 @@ import jpabook.jpashop.repository.OrderSearch;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,18 @@ public class OrderApiController {
         return new Result(collect);
     }
 
+    @GetMapping("/api/v3.1/orders")
+    public Result ordersV3_page(
+            @RequestParam(value = "offset", defaultValue = "1") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit
+    ) {
+        // xToOne 관계는 fetch join으로 가져오고, xToMany(컬렉션) 관계는 Lazy loading
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+        return new Result(collect);
+    }
 
     @Data
     static class OrderDto {
