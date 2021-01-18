@@ -46,7 +46,7 @@ public class OrderQueryRepository {
 
 
     /**
-     * N+1 문제를 해결한 V5 버전
+     * N+1 문제를 해결한 V5 버전 (총 쿼리 2회)
      * @return
      */
     public List<OrderQueryDto> findAllByDto_optimization() {
@@ -80,5 +80,21 @@ public class OrderQueryRepository {
         Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream()
                 .collect(Collectors.groupingBy(OrderItemQueryDto -> OrderItemQueryDto.getOrderId()));
         return orderItemMap;
+    }
+
+    /**
+     * 쿼리 1회로 가져오는 V6 버전
+     * @return
+     */
+    public List<OrderFlatDto> findAllByDto_flat() {
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d" +
+                        " join o.orderItems oi" +
+                        " join oi.item i", OrderFlatDto.class)
+                .getResultList();
+
     }
 }
