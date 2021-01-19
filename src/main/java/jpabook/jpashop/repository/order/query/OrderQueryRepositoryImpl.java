@@ -15,7 +15,6 @@ import static jpabook.jpashop.domain.QOrder.order;
 import static jpabook.jpashop.domain.QOrderItem.orderItem;
 import static jpabook.jpashop.domain.item.QItem.item;
 
-@RequiredArgsConstructor
 public class OrderQueryRepositoryImpl implements OrderQueryRepositoryCustom{
 
     private final EntityManager em;
