@@ -15,16 +15,15 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MemberRepositoryOld memberRepositoryOld;
     private final ItemRepository itemRepository;
-
+    private final MemberRepository memberRepository;
     /**
      * 주문
      */
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
-        Member member = memberRepositoryOld.findOne(memberId);
-        Item item = itemRepository.findOne(itemId);
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(IllegalArgumentException::new);
 
         //배송정보 생성
         Delivery delivery = new Delivery();
@@ -46,12 +45,12 @@ public class OrderService {
      */
     @Transactional
     public void cancelOrder(Long orderId) {
-        Order order = orderRepository.findOne(orderId);
+        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         order.cancel();
     }
 
     public List<Order> findOrders(OrderSearch orderSearch) {
-        return orderRepository.findAll(orderSearch);
+        return orderRepository.findAllBySearch(orderSearch);
     }
 
 }
